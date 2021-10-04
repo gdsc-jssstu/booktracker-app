@@ -25,11 +25,9 @@ The base project is a bare-bones library book tracker app where you can only add
 ## What is the final version of the project?
 Click [here](https://www.figma.com/file/XyMvKlsBUw1lPUn4ZVcxdd/BOOK-TRACKER?node-id=0%3A1) for the UI design and prototype of the project.
  
-![Booktracker landing page](readme_images/booktracker1.png)
- 
-![Book adding page](readme_images/booktracker2.png)
- 
-![Booktracker updated landing page](readme_images/booktracker3.png)
+![Booktracker landing page](readme_images/booktracker1.PNG)
+![Book adding page](readme_images/booktracker2.PNG)
+![Booktracker updated landing page](readme_images/booktracker3.PNG)
  
 **Intended Final Project:** A functional library book tracker in which you can add, remove, edit and view books, and get a reminder after 2 weeks to return them. This is not a library management system, but it is a personal reminder app.
  
