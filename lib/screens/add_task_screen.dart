@@ -77,10 +77,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               children: <Widget>[
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
-                  child: Icon(
+                  child: const Icon(
                     Icons.arrow_back_ios,
                     size: 30,
-                    color: Theme.of(context).primaryColor,
+                    color: Color(0xFF018786),
                   ),
                 ),
                 const SizedBox(
@@ -89,7 +89,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 Text(
                   widget.task == null ? 'Add Book title' : 'Update Book title',
                   style: const TextStyle(
-                      color: Colors.black,
+                      color: Color(0xFF018786),
                       fontSize: 40.0,
                       fontWeight: FontWeight.bold),
                 ),

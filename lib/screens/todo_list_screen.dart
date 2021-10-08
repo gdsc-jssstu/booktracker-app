@@ -1,9 +1,13 @@
+import 'dart:ui';
+
+import 'package:bookduetracker/provider/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:bookduetracker/helpers/database_helper.dart';
 import 'package:bookduetracker/models/task_model.dart';
 import 'package:bookduetracker/screens/add_task_screen.dart';
+import 'package:provider/provider.dart';
 
 class TodoListScreen extends StatefulWidget {
   const TodoListScreen({Key? key}) : super(key: key);
@@ -75,10 +79,20 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Themechanger _themechanger = Provider.of<Themechanger>(context);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
           title: const Center(child: Text('Book Tracker')),
+          leading: IconButton(
+              icon: const Icon(Icons.brightness_3_sharp),
+              onPressed: () => _themechanger.settheme(ThemeData.dark())),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.brightness_4),
+              onPressed: () => _themechanger.settheme(ThemeData.light()),
+            ),
+          ],
         ),
         floatingActionButton: FloatingActionButton(
           backgroundColor: Theme.of(context).primaryColor,
@@ -90,7 +104,10 @@ class _TodoListScreenState extends State<TodoListScreen> {
               ),
             )
           },
-          child: const Icon(Icons.add),
+          child: const Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
         ),
         body: FutureBuilder(
           future: _taskList,
@@ -120,8 +137,8 @@ class _TodoListScreenState extends State<TodoListScreen> {
                         const Text(
                           'Books to be Returned',
                           style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 30,
+                              color: Color(0xFF018786),
+                              fontSize: 32,
                               fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(
