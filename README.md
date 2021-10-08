@@ -32,7 +32,7 @@ Click [here](https://www.figma.com/file/XyMvKlsBUw1lPUn4ZVcxdd/BOOK-TRACKER?node
 **Intended Final Project:** A functional library book tracker in which you can add, remove, edit and view books, and get a reminder after 2 weeks to return them. This is not a library management system, but it is a personal reminder app.
  
 ## What should I work on?
-The issues tab on our GitHub repo serves as a list of features that are necessary or in-demand and a list of bugs that need to be fixed. Feel free to pick up an issue and work on it, but before you do so, please communicate with the project maintainers that you are working on the said issue. You can also add more issues on the list as a form of feature request, or to present a bug in our app.
+The issues tab on our GitHub repo serves as a list of features that are necessary or in-demand and a list of bugs that need to be fixed. Feel free to pick up an issue and work on it, but before you do so, please comment on the respective issue which you want to work on with the details on how you want to approach the issue, so that we can assign you the issue. You can also add more issues on the list as a form of feature request, or to present a bug in our app.
  
 ## Okay, so how do I contribute/start?
 ### Prerequisites:
@@ -54,6 +54,10 @@ Please refer to each project's style and contribution guidelines for submitting 
   > [Link to Docs](https://docs.github.com/en/get-started/quickstart/fork-a-repo#cloning-your-forked-repository)
  
   Cloning a project means that you are setting up the project on your local system.
+  
+  Please follow the given naming convention for naming the branch after forking: `<issue-type>/<issue-name-in-short>`
+  
+  For example, for the issue https://github.com/gdsc-jssstu/booktracker-app/issues/6, the branch name would be `enhancement/dark-theme-toggle`
  
 - Keeping your own forked repo in sync with the main repo
   > [Link to Docs](https://docs.github.com/en/github/collaborating-with-pull-requests/working-with-forks/syncing-a-fork)
