@@ -38,7 +38,8 @@ dependencies:
   sqflite: ^2.0.0+4
   path_provider: ^2.0.5
   get_it: ^7.2.0
-  provider:
+  provider: ^6.0.1
+  switcher: ^1.0.0
 
 dev_dependencies:
   flutter_test:
