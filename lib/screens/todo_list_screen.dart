@@ -1,6 +1,4 @@
 import 'dart:ui';
-import 'package:switcher/core/switcher_size.dart';
-import 'package:switcher/switcher.dart';
 import 'package:bookduetracker/provider/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -80,30 +78,25 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Themechanger _themechanger = Provider.of<Themechanger>(context);
+    Themechanger themechanger = Provider.of<Themechanger>(context);
 
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
           title: const Center(child: Text('Book Tracker')),
-          toolbarHeight: 47,
           leading: const SizedBox(
-            width: 10,
+            width: 15,
           ),
           actions: [
-            Switcher(
-              value: false,
-              size: SwitcherSize.large,
-              switcherButtonRadius: 70,
-              enabledSwitcherButtonRotate: true,
-              iconOff: Icons.light_mode,
-              iconOn: Icons.dark_mode,
-              colorOff: Colors.red,
-              colorOn: Colors.green,
-              onChanged: (bool state) {
-                state
-                    ? _themechanger.settheme(ThemeData.dark())
-                    : _themechanger.settheme(ThemeData.light());
+            Icon(themechanger.getDarkMode()
+                ? Icons.dark_mode
+                : Icons.light_mode),
+            Switch(
+              value: themechanger.getDarkMode(),
+              onChanged: (value) {
+                setState(() {
+                  themechanger.changeDarkMode(value);
+                });
               },
             ),
           ],

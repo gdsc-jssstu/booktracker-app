@@ -4,28 +4,28 @@ import 'package:provider/provider.dart';
 import 'package:bookduetracker/provider/theme.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider<Themechanger>(
+      create: (_) => Themechanger(),
+      child: const MyApp(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
   @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider<Themechanger>(
-      create: (_) => Themechanger(ThemeData()),
-      child: const MaterialAppwithTheme(),
-    );
-  }
+  State<MyApp> createState() => _MyAppState();
 }
 
-class MaterialAppwithTheme extends StatelessWidget {
-  const MaterialAppwithTheme({Key? key}) : super(key: key);
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    final theme = Provider.of<Themechanger>(context);
+    final themeProvider = Provider.of<Themechanger>(context);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: theme.gettheme(),
+      theme: themeProvider.getDarkMode() ? ThemeData.dark() : ThemeData.light(),
       home: const TodoListScreen(),
     );
   }
