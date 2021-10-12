@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:bookduetracker/provider/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:intl/intl.dart';
 import 'package:bookduetracker/helpers/database_helper.dart';
 import 'package:bookduetracker/models/task_model.dart';
@@ -47,6 +48,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
         // print(index);
       });
     }
+
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 25),
@@ -125,7 +127,10 @@ class _TodoListScreenState extends State<TodoListScreen> {
                             day.isEmpty ? formatter.format(task.date!) : day,
                             // formatter.format(task.date!),
                             // day,
-                            style: const TextStyle(fontSize: 30.0),
+                            style: const TextStyle(
+                              fontSize: 30.0,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ],

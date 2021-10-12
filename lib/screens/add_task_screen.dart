@@ -92,7 +92,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 GestureDetector(
-                  onTap: () => Navigator.pop(context),
+                  onTap: () => Navigator.pop(context,currentDate.day.toString()),
                   child: const Icon(
                     Icons.arrow_back_ios,
                     size: 30,
@@ -249,18 +249,18 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 ),
                 const SizedBox(height: 20.0),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
                       height: 60.0,
-                      width: 120.0,
+                      width: 150.0,
                       decoration: const BoxDecoration(
                         color: Colors.white,
                         shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        borderRadius: BorderRadius.all(Radius.circular(30.0)),
                       ),
                       child: TextButton(
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: () => Navigator.pop(context,currentDate.day.toString()),
                         child: Text(
                           'BACK',
                           style: TextStyle(
@@ -273,11 +273,11 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     ),
                     Container(
                       height: 60.0,
-                      width: 120.0,
+                      width: 150.0,
                       decoration: const BoxDecoration(
                         color: Colors.white,
                         shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        borderRadius: BorderRadius.all(Radius.circular(30.0)),
                       ),
                       child: TextButton(
                         onPressed: _submit,
