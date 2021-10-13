@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:bookduetracker/helpers/database_helper.dart';
@@ -43,7 +44,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       }
 
       widget.updateTaskList!();
-      Navigator.pop(context,currentDate.day.toString());
+      Navigator.pop(context, currentDate.day.toString());
     }
   }
 
@@ -92,7 +93,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 GestureDetector(
-                  onTap: () => Navigator.pop(context,currentDate.day.toString()),
+                  onTap: () =>
+                      Navigator.pop(context, currentDate.day.toString()),
                   child: const Icon(
                     Icons.arrow_back_ios,
                     size: 30,
@@ -180,6 +182,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       Form(
                         key: _formKey,
                         child: TextFormField(
+                          style: const TextStyle(
+                            fontSize: 22.0,
+                            fontWeight: FontWeight.bold,
+                          ),
                           decoration: const InputDecoration(
                             hintText: 'Title of the Book',
                             contentPadding: EdgeInsets.only(top: 15.0),
@@ -260,7 +266,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         borderRadius: BorderRadius.all(Radius.circular(30.0)),
                       ),
                       child: TextButton(
-                        onPressed: () => Navigator.pop(context,currentDate.day.toString()),
+                        onPressed: () =>
+                            Navigator.pop(context, currentDate.day.toString()),
                         child: Text(
                           'BACK',
                           style: TextStyle(

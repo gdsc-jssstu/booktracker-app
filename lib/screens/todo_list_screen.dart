@@ -3,6 +3,7 @@ import 'package:bookduetracker/provider/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:bookduetracker/helpers/database_helper.dart';
 import 'package:bookduetracker/models/task_model.dart';
@@ -106,7 +107,10 @@ class _TodoListScreenState extends State<TodoListScreen> {
                       child: Center(
                         child: Text(
                           task.title!,
-                          style: const TextStyle(fontSize: 25.0),
+                          style: const TextStyle(
+                            fontSize: 24.0,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),
