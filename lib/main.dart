@@ -25,7 +25,7 @@ class _MyAppState extends State<MyApp> {
     final themeProvider = Provider.of<Themechanger>(context);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: themeProvider.getDarkMode() ? ThemeData.dark() : ThemeData.light(),
+      theme: themeProvider.getDarkMode() ? ThemeData.dark() : ThemeData(primarySwatch: Colors.green),
       home: const TodoListScreen(),
     );
   }
