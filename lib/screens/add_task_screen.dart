@@ -252,7 +252,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     ),
                     Card(
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0)),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
                       child: SizedBox(
                         height: 60.0,
                         width: 150.0,
