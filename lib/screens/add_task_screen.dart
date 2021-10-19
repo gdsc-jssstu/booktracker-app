@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import 'package:bookduetracker/helpers/database_helper.dart';
 import 'package:bookduetracker/models/task_model.dart';
 
@@ -20,13 +22,14 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   String? _title = "";
   String? _priority = "Low";
   DateTime? _date = DateTime.now();
+  DateTime currentDate = DateTime.now();
+  DateTime today = DateTime.now();
   final TextEditingController _dateController = TextEditingController();
   final DateFormat _dateFormatter = DateFormat('MMM dd, yyyy');
 
   _submit() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      //print('$_title, $_priority, $_date');
 
       // Insert Task to Users Database
       Task task = Task(title: _title, date: _date, priority: _priority);
@@ -41,7 +44,18 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       }
 
       widget.updateTaskList!();
-      Navigator.pop(context);
+      Navigator.pop(context, currentDate.day.toString());
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: widget.task == null
+              ? const Text('Added book successfully...!')
+              : const Text("Changes applied successfully...!"),
+          action: SnackBarAction(
+            label: 'Hide',
+            onPressed: () {},
+          ),
+        ),
+      );
     }
   }
 
@@ -63,20 +77,37 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     super.dispose();
   }
 
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime.now(),
+        lastDate: DateTime(today.year, today.month, today.day + 14));
+    if (pickedDate != null && pickedDate != currentDate) {
+      setState(() {
+        currentDate = pickedDate;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: SingleChildScrollView(
           child: Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 40.0, vertical: 80.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 40.0,
+              vertical: 80.0,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 GestureDetector(
-                  onTap: () => Navigator.pop(context),
+                  onTap: () =>
+                      Navigator.pop(context, currentDate.day.toString()),
                   child: const Icon(
                     Icons.arrow_back_ios,
                     size: 30,
@@ -93,62 +124,154 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       fontSize: 40.0,
                       fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(
-                  height: 10.0,
-                ),
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        child: TextFormField(
-                          style: const TextStyle(fontSize: 18),
-                          decoration: InputDecoration(
-                              labelText: 'Title',
-                              labelStyle: const TextStyle(fontSize: 18),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0))),
-                          validator: (input) => input!.trim().isEmpty
-                              ? 'Please Enter a Book Title'
-                              : null,
-                          onSaved: (input) => _title = input,
-                          initialValue: _title,
-                        ),
-                      ),
-                      // Padding(
-                      //   padding: const EdgeInsets.symmetric(vertical: 20),
-                      //   child: TextFormField(
-                      //     readOnly: true,
-                      //     controller: _dateController,
-                      //     style: TextStyle(fontSize: 18),
-                      //     onTap: _handleDatePicker,
-                      //     decoration: InputDecoration(
-                      //         labelText: 'Date',
-                      //         labelStyle: TextStyle(fontSize: 18),
-                      //         border: OutlineInputBorder(
-                      //             borderRadius: BorderRadius.circular(10.0))),
-                      //   ),
-                      // ),
-                      Container(
-                        margin: const EdgeInsets.symmetric(vertical: 20.0),
-                        height: 60.0,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColor,
-                            borderRadius: BorderRadius.circular(30.0)),
-                        child: TextButton(
-                          onPressed: _submit,
-                          child: Text(
-                            widget.task == null ? 'Add' : 'Update',
+                const SizedBox(height: 10.0),
+                Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Form(
+                          key: _formKey,
+                          child: TextFormField(
+                            maxLength: 40,
                             style: const TextStyle(
-                                color: Colors.white, fontSize: 20.0),
+                              fontSize: 22.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                            decoration: const InputDecoration(
+                              focusColor: Colors.black,
+                              hintText: 'Title of the Book',
+                              contentPadding: EdgeInsets.only(top: 15.0),
+                            ),
+                            validator: (input) => input!.trim().isEmpty
+                                ? 'Title of the book is required'
+                                : null,
+                            onSaved: (input) => _title = input,
+                            initialValue: _title,
+                          ),
+                        ),
+                        const SizedBox(height: 10.0),
+                        const Text(
+                          "Return Date",
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            color: Colors.black,
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(5.0),
+                              height: 35.0,
+                              width: 133.0,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[400],
+                                shape: BoxShape.rectangle,
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(10.0),
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    currentDate.day.toString(),
+                                    style: const TextStyle(
+                                      fontSize: 20.0,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  const VerticalDivider(
+                                    color: Colors.black,
+                                    thickness: 2.0,
+                                  ),
+                                  Text(
+                                    currentDate.month.toString(),
+                                    style: const TextStyle(
+                                      fontSize: 20.0,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  const VerticalDivider(
+                                    color: Colors.black,
+                                    thickness: 2.0,
+                                  ),
+                                  Text(
+                                    currentDate.year.toString(),
+                                    style: const TextStyle(
+                                      fontSize: 20.0,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () => _selectDate(context),
+                              icon: const Icon(
+                                Icons.calendar_today,
+                                color: Colors.black,
+                                size: 30.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      child: SizedBox(
+                        height: 60.0,
+                        width: 150.0,
+                        child: TextButton(
+                          onPressed: () => Navigator.pop(
+                              context, currentDate.day.toString()),
+                          child: const Text(
+                            'BACK',
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                )
+                    ),
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      child: SizedBox(
+                        height: 60.0,
+                        width: 150.0,
+                        child: TextButton(
+                          onPressed: _submit,
+                          child: Text(
+                            widget.task == null ? 'CONFIRM' : 'UPDATE',
+                            style: const TextStyle(
+                              fontSize: 20.0,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),

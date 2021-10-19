@@ -1,12 +1,16 @@
 import 'dart:ui';
-import 'package:bookduetracker/provider/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
+import 'package:bookduetracker/provider/theme.dart';
 import 'package:bookduetracker/helpers/database_helper.dart';
 import 'package:bookduetracker/models/task_model.dart';
 import 'package:bookduetracker/screens/add_task_screen.dart';
-import 'package:provider/provider.dart';
 
 class TodoListScreen extends StatefulWidget {
   const TodoListScreen({Key? key}) : super(key: key);
@@ -17,7 +21,8 @@ class TodoListScreen extends StatefulWidget {
 
 class _TodoListScreenState extends State<TodoListScreen> {
   Future<List<Task>>? _taskList;
-  final DateFormat _dateFormatter = DateFormat('MMM dd, yyyy');
+  final DateFormat formatter = DateFormat('d');
+  String day = "";
 
   @override
   void initState() {
@@ -32,45 +37,76 @@ class _TodoListScreenState extends State<TodoListScreen> {
   }
 
   Widget _buildTask(Task task) {
+    void _awaitForDay(BuildContext context) async {
+      final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => AddTaskScreen(
+            updateTaskList: _updateTaskList,
+            task: task,
+          ),
+        ),
+      );
+      setState(() {
+        day = result;
+      });
+    }
+
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 25),
-        child: Column(
-          children: [
-            ListTile(
-              title: Text(
-                task.title!,
-                style: TextStyle(
-                    fontSize: 18,
-                    decoration: task.status == 0
-                        ? TextDecoration.none
-                        : TextDecoration.lineThrough),
-              ),
-              subtitle: Text(
-                '${_dateFormatter.format(task.date!)} * ${task.priority}',
-                style: TextStyle(
-                    fontSize: 15,
-                    decoration: task.status == 0
-                        ? TextDecoration.none
-                        : TextDecoration.lineThrough),
-              ),
-              trailing: Checkbox(
-                onChanged: (value) {
-                  task.status = value! ? 1 : 0;
-                  DatabaseHelper.instance.updateTask(task);
-                  _updateTaskList();
-                },
-                activeColor: Theme.of(context).primaryColor,
-                value: task.status == 1 ? true : false,
-              ),
-              onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => AddTaskScreen(
-                          updateTaskList: _updateTaskList, task: task))),
+      child: GestureDetector(
+        onTap: () => _awaitForDay(context),
+        child: Card(
+          color: Theme.of(context).cardColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          elevation: 8.0,
+          margin: const EdgeInsets.fromLTRB(25.0, 8.0, 25.0, 8.0),
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(7.0, 5.0, 5.0, 5.0),
+            height: 100.0,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      task.title!,
+                      style: const TextStyle(
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
+                const VerticalDivider(
+                  thickness: 2.0,
+                  color: Colors.black,
+                ),
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    const Icon(
+                      Icons.calendar_today,
+                      size: 90.0,
+                      color: Colors.black,
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 15.0),
+                      child: Text(
+                        day.isEmpty ? formatter.format(task.date!) : day,
+                        style: const TextStyle(
+                          fontSize: 30.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            const Divider()
-          ],
+          ),
         ),
       ),
     );
@@ -82,16 +118,27 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Theme.of(context).primaryColor,
         appBar: AppBar(
-          title: const Center(child: Text('Book Tracker')),
+          backgroundColor: Theme.of(context).primaryColor,
+          title: const Center(
+            child: Text(
+              'Book Tracker',
+              style: TextStyle(
+                  color: Color(0xFF018786),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 26.0),
+            ),
+          ),
           leading: const SizedBox(
             width: 15,
           ),
           actions: [
-            Icon(themechanger.getDarkMode()
-                ? Icons.dark_mode
-                : Icons.light_mode),
+            Icon(
+              themechanger.getDarkMode() ? Icons.dark_mode : Icons.light_mode,
+            ),
             Switch(
+              activeColor: Theme.of(context).cardColor,
               value: themechanger.getDarkMode(),
               onChanged: (value) {
                 setState(() {
@@ -102,20 +149,23 @@ class _TodoListScreenState extends State<TodoListScreen> {
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          backgroundColor: Theme.of(context).primaryColor,
+          backgroundColor: Theme.of(context).cardColor,
           onPressed: () => {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (_) => AddTaskScreen(updateTaskList: _updateTaskList),
               ),
-            )
+            ),
           },
           child: const Icon(
             Icons.add,
-            color: Colors.white,
+            color: Colors.black,
+            size: 35.0,
           ),
         ),
+        floatingActionButtonLocation:
+            FloatingActionButtonLocation.miniCenterFloat,
         body: FutureBuilder(
           future: _taskList,
           builder: (context, snapshot) {
@@ -125,39 +175,37 @@ class _TodoListScreenState extends State<TodoListScreen> {
               );
             }
 
-            final int? completedTaskCount = (snapshot.data as List<Task>)
-                .where((Task task) => task.status == 1)
-                .toList()
-                .length;
-
             return ListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 60.0),
+              padding: const EdgeInsets.only(bottom: 75.0),
               itemCount: 1 + (snapshot.data as List<Task>).length,
               itemBuilder: (BuildContext context, int index) {
                 if (index == 0) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(
-                        vertical: 20.0, horizontal: 40.0),
+                      vertical: 10.0,
+                      horizontal: 25.0,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Books to be Returned',
-                          style: TextStyle(
-                              color: Color(0xFF018786),
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold),
+                        Card(
+                          color: Theme.of(context).cardColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          child: Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(15.0),
+                            child: const Text(
+                              'Hi There 👋,',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
                         ),
-                        const SizedBox(
-                          height: 10.0,
-                        ),
-                        Text(
-                          '$completedTaskCount of ${(snapshot.data as List<Task>).length}',
-                          style: const TextStyle(
-                              color: Colors.grey,
-                              fontSize: 15.0,
-                              fontWeight: FontWeight.w600),
-                        )
                       ],
                     ),
                   );
