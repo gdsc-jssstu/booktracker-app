@@ -22,7 +22,6 @@ class TodoListScreen extends StatefulWidget {
 class _TodoListScreenState extends State<TodoListScreen> {
   Future<List<Task>>? _taskList;
   final DateFormat formatter = DateFormat('d');
-  String day = "";
 
   @override
   void initState() {
@@ -37,8 +36,12 @@ class _TodoListScreenState extends State<TodoListScreen> {
   }
 
   Widget _buildTask(Task task) {
+    DateTime? date1 =
+        DateTime(task.date!.year, task.date!.month, task.date!.day);
+    DateTime? date2 = DateTime.now();
+    final dif = date1.difference(date2).inDays;
     void _awaitForDay(BuildContext context) async {
-      final result = await Navigator.push(
+      await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (_) => AddTaskScreen(
@@ -47,9 +50,6 @@ class _TodoListScreenState extends State<TodoListScreen> {
           ),
         ),
       );
-      setState(() {
-        day = result;
-      });
     }
 
     return SafeArea(
@@ -94,11 +94,11 @@ class _TodoListScreenState extends State<TodoListScreen> {
                     Container(
                       margin: const EdgeInsets.only(top: 15.0),
                       child: Text(
-                        day.isEmpty ? formatter.format(task.date!) : day,
-                        style: const TextStyle(
+                        task.date!.day.toString(),
+                        style: TextStyle(
                           fontSize: 30.0,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                          color: (dif <= 3) ? Colors.red[900] : Colors.black,
                         ),
                       ),
                     ),

@@ -23,7 +23,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   String? _priority = "Low";
   DateTime? _date = DateTime.now();
   DateTime currentDate = DateTime.now();
-  DateTime today = DateTime.now();
   final TextEditingController _dateController = TextEditingController();
   final DateFormat _dateFormatter = DateFormat('MMM dd, yyyy');
 
@@ -39,12 +38,13 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       } else {
         // Update Task to Users Database
         task.id = widget.task!.id;
+
         task.status = widget.task!.status;
         DatabaseHelper.instance.updateTask(task);
       }
 
       widget.updateTaskList!();
-      Navigator.pop(context, currentDate.day.toString());
+      Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: widget.task == null
@@ -80,12 +80,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
         context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime.now(),
-        lastDate: DateTime(today.year, today.month, today.day + 14));
+        initialDate: DateTime(_date!.year, _date!.month, _date!.day),
+        firstDate: DateTime(_date!.year, _date!.month, _date!.day),
+        lastDate: DateTime(_date!.year, _date!.month, _date!.day + 14));
     if (pickedDate != null && pickedDate != currentDate) {
       setState(() {
-        currentDate = pickedDate;
+        _date = pickedDate;
       });
     }
   }
@@ -180,7 +180,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                               child: Row(
                                 children: [
                                   Text(
-                                    currentDate.day.toString(),
+                                    _date!.day.toString(),
                                     style: const TextStyle(
                                       fontSize: 20.0,
                                       color: Colors.black,
@@ -191,7 +191,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                     thickness: 2.0,
                                   ),
                                   Text(
-                                    currentDate.month.toString(),
+                                    _date!.month.toString(),
                                     style: const TextStyle(
                                       fontSize: 20.0,
                                       color: Colors.black,
@@ -202,7 +202,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                     thickness: 2.0,
                                   ),
                                   Text(
-                                    currentDate.year.toString(),
+                                    _date!.year.toString(),
                                     style: const TextStyle(
                                       fontSize: 20.0,
                                       color: Colors.black,
@@ -237,8 +237,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         height: 60.0,
                         width: 150.0,
                         child: TextButton(
-                          onPressed: () => Navigator.pop(
-                              context, currentDate.day.toString()),
+                          onPressed: () => Navigator.pop(context),
                           child: const Text(
                             'BACK',
                             style: TextStyle(
