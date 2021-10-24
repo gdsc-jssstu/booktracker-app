@@ -40,7 +40,6 @@ class _TodoListScreenState extends State<TodoListScreen> {
         DateTime(task.date!.year, task.date!.month, task.date!.day);
     DateTime? date2 = DateTime.now();
     final dif = date1.difference(date2).inDays;
-    // print(task.title.toString() + " " + dif.toString());
     void _awaitForDay(BuildContext context) async {
       await Navigator.push(
         context,
