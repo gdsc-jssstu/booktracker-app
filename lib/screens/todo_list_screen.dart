@@ -55,56 +55,94 @@ class _TodoListScreenState extends State<TodoListScreen> {
     return SafeArea(
       child: GestureDetector(
         onTap: () => _awaitForDay(context),
-        child: Card(
-          color: Theme.of(context).cardColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
+        child: Dismissible(
+          key: UniqueKey(),
+          background: Container(
+            padding: const EdgeInsets.only(left: 15.0),
+            alignment: Alignment.centerLeft,
+            color: Colors.red[900],
+            child: const Icon(
+              Icons.delete_forever,
+              color: Colors.black,
+              size: 35.0,
+            ),
           ),
-          elevation: 8.0,
-          margin: const EdgeInsets.fromLTRB(25.0, 8.0, 25.0, 8.0),
-          child: Container(
-            padding: const EdgeInsets.fromLTRB(7.0, 5.0, 5.0, 5.0),
-            height: 100.0,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      task.title!,
-                      style: const TextStyle(
-                        fontSize: 24.0,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                      ),
-                    ),
+          secondaryBackground: Container(
+            padding: const EdgeInsets.only(right: 15.0),
+            alignment: Alignment.centerRight,
+            color: Colors.red[900],
+            child: const Icon(
+              Icons.delete_forever,
+              color: Colors.black,
+              size: 35.0,
+            ),
+          ),
+          onDismissed: (direction) async {
+            setState(() {
+              DatabaseHelper.instance.deleteTask(task.id);
+              _updateTaskList();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text("Deleted Successfully...!"),
+                  action: SnackBarAction(
+                    label: 'HIDE',
+                    onPressed: () {},
                   ),
                 ),
-                const VerticalDivider(
-                  thickness: 2.0,
-                  color: Colors.black,
-                ),
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    const Icon(
-                      Icons.calendar_today,
-                      size: 90.0,
-                      color: Colors.black,
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 15.0),
+              );
+            });
+          },
+          child: Card(
+            color: Theme.of(context).cardColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            elevation: 8.0,
+            margin: const EdgeInsets.fromLTRB(25.0, 8.0, 25.0, 8.0),
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(7.0, 5.0, 5.0, 5.0),
+              height: 100.0,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Center(
                       child: Text(
-                        task.date!.day.toString(),
-                        style: TextStyle(
-                          fontSize: 30.0,
-                          fontWeight: FontWeight.bold,
-                          color: (dif <= 3) ? Colors.red[900] : Colors.black,
+                        task.title!,
+                        style: const TextStyle(
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
                         ),
                       ),
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                  const VerticalDivider(
+                    thickness: 2.0,
+                    color: Colors.black,
+                  ),
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      const Icon(
+                        Icons.calendar_today,
+                        size: 90.0,
+                        color: Colors.black,
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 15.0),
+                        child: Text(
+                          task.date!.day.toString(),
+                          style: TextStyle(
+                            fontSize: 30.0,
+                            fontWeight: FontWeight.bold,
+                            color: (dif <= 3) ? Colors.red[900] : Colors.black,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
