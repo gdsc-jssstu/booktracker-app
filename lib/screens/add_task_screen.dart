@@ -51,7 +51,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               ? const Text('Added book successfully...!')
               : const Text("Changes applied successfully...!"),
           action: SnackBarAction(
-            label: 'Hide',
+            label: 'HIDE',
             onPressed: () {},
           ),
         ),
@@ -105,14 +105,75 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                GestureDetector(
-                  onTap: () =>
-                      Navigator.pop(context, currentDate.day.toString()),
-                  child: const Icon(
-                    Icons.arrow_back_ios,
-                    size: 30,
-                    color: Color(0xFF018786),
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: () =>
+                          Navigator.pop(context, currentDate.day.toString()),
+                      child: const Icon(
+                        Icons.arrow_back_ios,
+                        size: 30,
+                        color: Color(0xFF018786),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: (widget.task == null)
+                          ? null
+                          : () {
+                              showDialog(
+                                context: context,
+                                builder: (param) {
+                                  return AlertDialog(
+                                    elevation: 0,
+                                    title: const Text(
+                                      "Are you sure do you want to delete this?",
+                                    ),
+                                    actions: [
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          primary: Colors.green,
+                                        ),
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(),
+                                        child: const Text("CANCEL"),
+                                      ),
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            primary: Colors.red),
+                                        onPressed: () async {
+                                          await DatabaseHelper.instance
+                                              .deleteTask(widget.task!.id);
+                                          Navigator.pop(context);
+                                          Navigator.pop(context);
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              action: SnackBarAction(
+                                                label: 'HIDE',
+                                                onPressed: () {},
+                                              ),
+                                              content: const Text(
+                                                "Deleted Successfully...!",
+                                              ),
+                                            ),
+                                          );
+                                          widget.updateTaskList!();
+                                        },
+                                        child: const Text("DELETE"),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                      icon: const Icon(
+                        Icons.delete,
+                        size: 30,
+                        color: Color(0xFF018786),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(
                   height: 20.0,
